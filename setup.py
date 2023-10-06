@@ -30,7 +30,7 @@ INSTALL_REQUIRES = (
     "cachecontrol[filecache]",
     "pip>=18.0",
     "dictdiffer",
-    "qasync",
+    "qasync>=0.10.0",
     "importlib_metadata; python_version<'3.8'",
 )
 
