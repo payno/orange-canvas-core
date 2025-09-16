@@ -1647,6 +1647,7 @@ document/interactions.py:
     A: false
     class `NewLinkAction`:
         def `mousePressEvent`:
+            Create a new link: Dodaj novo povezavo
             <h3>Create new link</h3>: <h3>Dodaj novo povezavo</h3>
             '<p>Drag a link to an existing node or release on ': '<p>Povlecite povezavo do obstoječega gradnika ali pa '
             an empty spot to create a new node.</p>: na prazno mesto, da tam postavite nov gradnik.</p>
@@ -1691,6 +1692,7 @@ document/interactions.py:
         def `__init__`:
             red: false
         def `start`:
+            Click and drag to create a new arrow: Povlecite in spustite, da narišete puščico.
             <h3>New arrow annotation</h3>: <h3>Risanje oznake s puščico</h3>
             <p>Click and drag to create a new arrow annotation</p>: <p>Povlecite in spustite, da ustvarite oznako s puščico.</p>
     class `NewTextAnnotation`:
@@ -2436,6 +2438,7 @@ help/manager.py:
         data: false
         URL: false
         DEVELOP_ROOT: false
+        .: false
     def `create_intersphinx_provider`:
         objects.inv: false
         Local doc root '%s' does not exist.: false
