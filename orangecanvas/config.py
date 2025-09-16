@@ -364,6 +364,12 @@ spec = \
      ("startup/load-crashed-workflows", bool, True,
       "Load crashed scratch workflows on startup"),
 
+     ("application/language", str, "English",
+      "Application language"),
+
+     ("application/last-used-language", str, "English",
+      "If different from application/language, widget discovery is forced"),
+
      ("stylesheet", str, "orange",
       "QSS stylesheet to use"),
 
@@ -428,7 +434,7 @@ spec = \
 
      ("logging/dockable", bool, True, "Allow log window to be docked"),
 
-     ("help/open-in-external-browser", bool, False,
+     ("help/open-in-external-browser", bool, True,
       "Open help in an external browser"),
 
      ("add-ons/allow-conda", bool, True,
@@ -440,6 +446,8 @@ spec = \
      ("network/http-proxy", str, '', 'HTTP proxy.'),
 
      ("network/https-proxy", str, '', 'HTTPS proxy.'),
+
+     ("network/use-certs", bool, False, "Use system certificates."),
      ]
 
 

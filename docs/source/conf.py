@@ -16,8 +16,8 @@ import sys
 import os
 import shlex
 
-import importlib_metadata
-dist = importlib_metadata.distribution("orange-canvas-core")
+import importlib.metadata
+dist = importlib.metadata.distribution("orange-canvas-core")
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -46,7 +46,7 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = {'.rst': 'restructuredtext'}
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
@@ -73,7 +73,7 @@ release = dist.version
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -296,4 +296,15 @@ texinfo_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+
+
+def fix_pyqtsignal_docstring(app, what, name, obj, options, lines):
+    from AnyQt.QtCore import pyqtSignal as Signal
+    if isinstance(obj, Signal):
+        for i in range(len(lines)):
+            lines[i] = lines[i].replace("*", r"\*")
+
+
+def setup(app):
+    app.connect("autodoc-process-docstring", fix_pyqtsignal_docstring)

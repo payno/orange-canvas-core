@@ -39,6 +39,11 @@ config.py:
     Show Welcome screen on startup: false
     startup/load-crashed-workflows: false
     Load crashed scratch workflows on startup: false
+    application/language: false
+    English: true
+    Application language: Jezik
+    application/last-used-language: false
+    If different from application/language, widget discovery is forced: false
     stylesheet: false
     QSS stylesheet to use: false
     schemeinfo/show-at-new-scheme: false
@@ -360,6 +365,8 @@ application/application.py:
             -style: false
             styleHints: false
             setShowShortcutsInContextMenus: false
+            win32: false
+            QMessageBox: false
         def `argumentParser`:
             -style: false
             -colortheme: false
@@ -433,6 +440,9 @@ application/canvasmain.py:
             Save As ...: Shrani kot ...
             action-save-as: false
             Save current workflow as.: Shrani trenutni delotok z novi imenom
+            Save Workflow Image as SVG ...: Shrani sliko delotoka kot SVG...
+            action-save-to-svg.: false
+            Save workflow image as SVG.: Shrani sliko delotoka kot SVG.
             Quit: Zapri
             quit-action: false
             Welcome: Začetno okno
@@ -615,10 +625,10 @@ application/canvasmain.py:
             Save Changes?: Shranim spremembe?
             Your changes will be lost if you do not save them.: Spremembe ne bodo ohranjene, če jih ne shranite.
         def `save_scheme_as`:
-            mainwindow: false
             last-scheme-dir: false
             .ows: false
             Save Orange Workflow File: Shranjevanje delotoka
+            save-as-ows-filedialog: false
             Orange Workflow (*.ows): Orangov delotok (*.ows)
         def `save_scheme_to`:
             untitled: nepoimenovan
@@ -656,6 +666,28 @@ application/canvasmain.py:
             'Could not load swp file: %r': false
             Could not load restore data.: Ne morem obnoviti podatkov.
             Error: Napaka
+        def `_settings`:
+            mainwindow: false
+        def `save_as_svg`:
+            save-as-svg-filedialog: false
+            path: false
+            .svg: false
+            untitled.svg: nepoimenovan.svg
+            Scalable Vector Graphics (*.svg): true
+            def `save`:
+                path: false
+        def `__save_as_svg`:
+            wt: false
+            utf-8: false
+        def `_handle_os_write_error`:
+            Write error: Napaka pri pisanju
+            '"%(path)s" could not be saved. You do not ': '"%(path)s" ni mogoče shraniti. Morda nimate '
+            have write permissions (%(strerror)s).: pravice pisati v direktorij (%(strerror)s).
+            path: false
+            strerror: false
+            'Change the file system permissions or choose ': 'Nastavite ustrezna pravice ali izberite '
+            another location.: drugo mesto.
+            '"%(path)s" could not be saved.': '"%(path)s" ni mogoče shraniti.'
         def `recent_scheme`:
             mainwindow/recent-items: false
             title: false
@@ -923,6 +955,12 @@ application/settings.py:
         def `__setupUi`:
             General: Splošno
             General Options: Splošne nastavitve
+            Changes will take effect on next application startup.: Spremembe bodo uveljavljene ob naslednjem zagonu programa.
+            combo-language: false
+            Select the application language.: Izberite jezik aplikacije.
+            currentText: false
+            application/language: false
+            Language: Jezik
             nodes: false
             Enable node animations: Animiraj gradnike
             enable-node-animations: false
@@ -1252,13 +1290,11 @@ application/utils/addons.py:
             install: false
             --yes: false
             --quiet: false
-            --satisfied-skip-solve: false
         def `upgrade`:
             ={}: false
             install: false
             --yes: false
             --quiet: false
-            --satisfied-skip-solve: false
         def `uninstall`:
             uninstall: false
             --yes: false
@@ -1420,6 +1456,8 @@ canvas/items/linkitem.py:
         def `__updateText`:
             <nobr>{0}</nobr> \u2192 <nobr>{1}</nobr>: false
             '<div align="center" style="font-size: small" >{0}</div>': false
+        def `__update_tooltip`:
+            {self.sourceItem.title()} is not providing the proper data type required by {self.sinkItem.title()}: {self.sourceItem.title()} ni priskrbel pravilnega podatkovnega tipa za {self.sinkItem.title()}
         def `__updatePen`:
             '#9CACB4': false
             '#959595': false
@@ -1659,10 +1697,11 @@ document/interactions.py:
             <p>Click and drag to create a new arrow annotation</p>: <p>Povlecite in spustite, da ustvarite oznako s puščico.</p>
     class `NewTextAnnotation`:
         def `start`:
-            Click to create a new text annotation: Kliknite, da dodate besedilno oznako.
             <h3>New text annotation</h3>: <h3>Nova besedilna oznaka</h3>
             '<p>Click (and drag to resize) on the canvas to create ': <p>Kliknite (in vlecite, da določite velikost), da dodate novo besedilno oznako.</p>
             a new text annotation item.</p>: ""
+            '<p>Right click on the annotation to change how it is ': '<p>Desni klik na oznako omogoča spreminjanje načina prikaza '
+            rendered (Markdown, HTML, ...).</p>: (Markdown, HTML, ...).</p>
         def `createNewAnnotation`:
             family: false
             size: false
@@ -1670,6 +1709,11 @@ document/interactions.py:
         def `commit`:
             rect: false
             Edit text geometry: false
+        def `start`:
+            <h3>Edit Text Annotation</h3>: <h3>Urejanje besedilne oznake</h3>
+            <p>Drag control points to resize the annotation.</p>: <p>Povlecite kontrolne točke za spremembo velikosti oznake.</p>
+            '<p>Right click on the annotation to change how it is ': '<p>Desni klik na oznako omogoča spreminjanje načina prikaza '
+            rendered (Markdown, HTML, ...).</p>: (Markdown, HTML, ...).</p>
         def `cancel`:
             ResizeTextAnnotation.cancel(%s): false
     class `ResizeArrowAnnotation`:
@@ -2005,6 +2049,8 @@ document/schemeedit.py:
     Cs: false
     Co: false
     Cn: false
+    def `remove_copy_number`:
+        \s+\(\d+\)\s*$: false
     def `uniquify`:
         {item}-{_}: false
 document/suggestions.py:
@@ -2472,6 +2518,104 @@ help/provider.py:
                 content: false
         utf-16: false
         latin-1: false
+localization/__init__.py:
+    def `pl`:
+        '|': false
+        yY: false
+        aeiouAEIOU: false
+        ies: false
+        s: false
+    def `get_languages`:
+        orangecanvas: false
+        i18n: false
+        .json: false
+        'Invalid language file ': false
+    English: false
+    def `language_changed`:
+        application/language: false
+        application/last-used-language: false
+    def `update_last_used_language`:
+        application/language: false
+        English: true
+        application/last-used-language: false
+    class `Translator`:
+        def `__init__`:
+            biolab.si: false
+            Orange: false
+            application/language: false
+            i18n: false
+            {lang_eng}.json: false
+            {DEFAULT_LANGUAGE}.json: false
+            Missing language file {path}: false
+        def `c`:
+            <string>: false
+            eval: false
+localization/si.py:
+    def `plsi`:
+        '|': false
+        a: false
+        i: false
+        e: false
+        ov: false
+    def `plsi_sz`:
+        {n:_}: false
+        _: false
+        1: false
+        z: false
+        zszzzzsssssssssszzzzzz: false
+        s: false
+        0: false
+        zzzssssszz: false
+    def `z_besedo`:
+        nič: false
+        m: false
+        en: false
+        enega: false
+        enemu: false
+        enem: false
+        enim: false
+        f: false
+        ena: false
+        ene: false
+        eni: false
+        eno: false
+        n: false
+        dva: false
+        dveh: false
+        dvema: false
+        dve: false
+        tri: false
+        treh: false
+        trem: false
+        tremi: false
+        štiri: false
+        štirih: false
+        štirim: false
+        štirimi: false
+        pet: false
+        petih: false
+        petim: false
+        petimi: false
+        šest: false
+        šestih: false
+        šestim: false
+        šestimi: false
+        sedem: false
+        sedmih: false
+        sedmim: false
+        sedmimi: false
+        osem: false
+        osmih: false
+        osmim: false
+        osmimi: false
+        devet: false
+        devetih: false
+        devetim: false
+        devetimi: false
+        deset: false
+        desetih: false
+        desetim: false
+        desetimi: false
 preview/previewbrowser.py:
     '
 
@@ -3471,11 +3615,19 @@ utils/pkgmeta.py:
     parse_meta: false
     get_dist_meta: false
     get_distribution: false
+    develop_root: false
+    get_dist_url: false
     def `normalize_name`:
         [-_.]+: false
         -: false
         _: false
-    def `is_develop_egg`:
+    def `_direct_url`:
+        direct_url.json: false
+    def `develop_root`:
+        dir_info: false
+        editable: false
+        url: false
+        file: false
         {normalize_name(dist.name)}.egg-info/: false
         setup.py: false
     def `trim`:
@@ -3602,9 +3754,6 @@ utils/shtools.py:
         utf-8: false
         wt: false
 utils/localization/__init__.py:
-    def `pl`:
-        '|': false
-        yY: false
-        aeiouAEIOU: false
-        ies: false
-        s: false
+    import 'orangecanvas.localization', not 'orangecanvas.utils.localization': false
+utils/localization/si.py:
+    import 'orangecanvas.localization.si', not 'orangecanvas.utils.localization.si': false

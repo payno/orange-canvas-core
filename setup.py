@@ -1,8 +1,12 @@
 #! /usr/bin/env python
+import os
+
 from setuptools import setup, find_packages
+from setuptools.command.install import install
+
 
 NAME = "orange-canvas-core"
-VERSION = "0.2.1"
+VERSION = "0.2.6"
 DESCRIPTION = "Core component of Orange Canvas"
 
 with open("README.rst", "rt", encoding="utf-8") as f:
@@ -30,10 +34,10 @@ INSTALL_REQUIRES = (
     "pip>=18.0",
     "dictdiffer",
     "qasync>=0.10.0",
-    "importlib_metadata; python_version<'3.10'",
-    "importlib_resources; python_version<'3.9'",
+    "typing_extensions",
     "packaging",
     "numpy",
+    "truststore",
 )
 
 
@@ -59,7 +63,23 @@ PROJECT_URLS = {
     "Documentation": "https://orange-canvas-core.readthedocs.io/en/latest/",
 }
 
-PYTHON_REQUIRES = ">=3.6"
+PYTHON_REQUIRES = ">=3.10"
+
+
+class InstallMultilingualCommand(install):
+    def run(self):
+        super().run()
+        self.compile_to_multilingual()
+
+    def compile_to_multilingual(self):
+        from trubar import translate
+
+        package_dir = os.path.dirname(os.path.abspath(__file__))
+        translate(
+            "msgs.jaml",
+            source_dir=os.path.join(self.install_lib, "orangecanvas"),
+            config_file=os.path.join(package_dir, "i18n", "trubar-config.yaml"))
+
 
 if __name__ == "__main__":
     setup(
@@ -75,6 +95,9 @@ if __name__ == "__main__":
         packages=PACKAGES,
         package_data=PACKAGE_DATA,
         install_requires=INSTALL_REQUIRES,
+        cmdclass={
+            'install': InstallMultilingualCommand,
+        },
         extras_require=EXTRAS_REQUIRE,
         project_urls=PROJECT_URLS,
         python_requires=PYTHON_REQUIRES,

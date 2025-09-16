@@ -21,6 +21,7 @@ from AnyQt.QtCore import (
     Signal)
 
 from .. import config
+from ..localization import get_languages
 from ..utils.settings import SettingChangedEvent
 from ..utils.propertybindings import (
     AbstractBoundProperty, PropertyBinding, BindingManager
@@ -274,6 +275,25 @@ class UserSettingsDialog(QMainWindow):
         form = FormLayout()
         tab.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
+        languages = get_languages()
+        if languages:
+            langlay = QHBoxLayout()
+            label = QLabel(
+                "Changes will take effect on next application startup.")
+            label.setHidden(True)
+
+            cm_lang = QComboBox(
+                objectName="combo-language",
+                toolTip=self.tr("Select the application language.")
+            )
+            cm_lang.addItems(list(languages))
+            self.bind(cm_lang, "currentText", "application/language")
+            cm_lang.currentTextChanged.connect(lambda: label.setHidden(False))
+
+            langlay.addWidget(cm_lang)
+            langlay.addWidget(label)
+            form.addRow(self.tr("Language"), langlay)
+
         nodes = QWidget(self, objectName="nodes")
         nodes.setLayout(QVBoxLayout())
         nodes.layout().setContentsMargins(0, 0, 0, 0)
@@ -491,6 +511,9 @@ class UserSettingsDialog(QMainWindow):
         line_edit_https_proxy = QLineEdit()
         self.bind(line_edit_https_proxy, "text", "network/https-proxy")
         form.addRow("HTTPS proxy:", line_edit_https_proxy)
+        cb_use_certs = QCheckBox()
+        self.bind(cb_use_certs, "checked", "network/use-certs")
+        form.addRow("Use system certificates:", cb_use_certs)
         tab.setLayout(form)
 
         if self.__macUnified:

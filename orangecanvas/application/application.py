@@ -48,7 +48,7 @@ def fix_qt_plugins_path():
 
     if AnyQt.USED_API == "pyqt5":
         import PyQt5.QtCore as qc
-    if AnyQt.USED_API == "pyqt6":
+    elif AnyQt.USED_API == "pyqt6":
         import PyQt6.QtCore as qc
     elif AnyQt.USED_API == "pyside2":
         import PySide2.QtCore as qc
@@ -151,6 +151,9 @@ class CanvasApplication(QApplication):
                 sh.setShowShortcutsInContextMenus(True)
         if QT_VERSION_INFO < (5, 15):  # QTBUG-61707
             macos_set_nswindow_tabbing(False)
+        if QT_VERSION_INFO < (6, 0) and sys.platform == "win32":  # QTBUG-58610
+            # https://github.com/musescore/MuseScore/pull/5820
+            QApplication.setFont(QApplication.font("QMessageBox"))
         self.configureStyle()
 
     def event(self, event):

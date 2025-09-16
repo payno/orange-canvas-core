@@ -2474,7 +2474,7 @@ class CanvasMainWindow(QMainWindow):
         log.info("Setting help to url: %r", url)
         settings = QSettings()
         use_external = settings.value(
-            "help/open-in-external-browser", defaultValue=False, type=bool)
+            "help/open-in-external-browser", defaultValue=True, type=bool)
         if use_external or self.help_view is None:
             url = QUrl(url)
             QDesktopServices.openUrl(url)
@@ -2586,6 +2586,14 @@ class CanvasMainWindow(QMainWindow):
                                          defaultValue=False,
                                          type=bool)
         self.scheme_widget.setNodeAnimationEnabled(node_animations)
+        settings.endGroup()
+
+        settings.beginGroup("network")
+        if settings.value("use-certs", defaultValue=False, type=bool):
+            import truststore
+
+            truststore.inject_into_ssl()
+
         settings.endGroup()
 
         self.__update_registry_filters()
